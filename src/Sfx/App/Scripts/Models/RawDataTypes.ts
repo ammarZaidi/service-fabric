@@ -208,6 +208,21 @@ module Sfx {
         Id: string;
     }
 
+    export interface IRawNetwork{
+        name: string;
+        properties: IRawNetworkProperties;
+    }
+
+    export interface IRawNetworkProperties{
+        kind: string;
+        networkAddressPrefix: string;
+        networkStatus: string;
+    }
+
+    export interface IRawNetworkOnApp{
+        networkName: string;
+    }
+
     export interface IRawNode {
         Name: string;
         IpAddressOrFQDN: string;

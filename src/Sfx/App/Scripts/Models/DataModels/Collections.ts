@@ -284,6 +284,36 @@ module Sfx {
         }
     }
 
+    export class NetworkCollection extends DataModelCollectionBase<Network> {
+        public constructor(data: DataService) {
+            super(data);
+        }
+
+        public get viewPath(): string {
+            return this.data.routes.getNetworksViewPath();
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            return this.data.restClient.getNetworks(messageHandler).then(items => {
+                return _.map(items, raw => new Network(this.data, raw));
+            });
+        }
+    }
+
+    export class NetworkOnAppCollection extends DataModelCollectionBase<NetworkOnApp> {
+        appId: string;
+        public constructor(data: DataService, appId: string) {
+            super(data);
+            this.appId = appId;
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            return this.data.restClient.getNetworksOnApp(this.appId, messageHandler).then(items => {
+                return _.map(items, raw => new NetworkOnApp(this.data, raw));
+            });
+        }
+    }
+
     export class ApplicationCollection extends DataModelCollectionBase<Application> {
         public upgradingAppCount: number = 0;
         public healthState: ITextAndBadge;
