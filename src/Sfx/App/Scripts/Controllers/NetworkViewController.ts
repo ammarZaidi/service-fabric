@@ -9,6 +9,12 @@ module Sfx {
         //deployedApps: DeployedApplicationOnNetworkCollection;
         //deployedNodes: IRawNodesInNetwork[];
         listSettings: ListSettings;
+        apps: AppOnNetworkCollection;
+        appListSettings: ListSettings;
+        nodes: NodeOnNetworkCollection;
+        nodeListSettings: ListSettings;
+        containers: DeployedContainerOnNetworkCollection;
+        containerListSettings: ListSettings;
     }
 
     export class NetworkViewController extends MainViewController {
@@ -19,7 +25,7 @@ module Sfx {
                 "essentials": { name: "Essentials" },
                 "details": { name: "Details" }
             });
-            //this.tabs["essentials"].refresh = (messageHandler) => this.refreshEssentials(messageHandler);
+            this.tabs["essentials"].refresh = (messageHandler) => this.refreshEssentials(messageHandler);
             //this.tabs["details"].refresh = (messageHandler) => this.refreshDetails(messageHandler);
             this.networkName = IdUtils.getNetworkName(this.routeParams);
 
@@ -28,12 +34,28 @@ module Sfx {
                 IdGenerator.networkGroup(),
                 IdGenerator.network(this.networkName)
             ]);
-            this.$scope.listSettings = this.settings.getNewOrExistingListSettings("apps", ["name"], [
-                new ListColumnSettingForLink("name", "Name", item => item.viewPath),
-                new ListColumnSetting("raw.TypeName", "Application Type"),
-                new ListColumnSettingForBadge("health.healthState", "Health State"),
-                new ListColumnSettingWithFilter("raw.Status", "Status"),
+            this.$scope.appListSettings = this.settings.getNewOrExistingListSettings("apps", ["appDetail.raw.Name"], [
+                new ListColumnSettingForLink("appDetail.raw.Name", "Application Name", item => item.viewPath),
+                new ListColumnSetting("appDetail.raw.TypeName", "Application Type"),
+                new ListColumnSettingForBadge("appDetail.healthState", "Health State"),
+                new ListColumnSetting("appDetail.raw.Status", "Status"),
             ]);
+            this.$scope.apps = new AppOnNetworkCollection(this.data, this.networkName);
+            this.$scope.nodeListSettings = this.settings.getNewOrExistingListSettings("nodes", ["nodeDetails.name"], [
+                new ListColumnSettingForLink("nodeDetails.name", "Name", item => item.viewPath),
+                new ListColumnSetting("nodeDetails.raw.IpAddressOrFQDN", "Address"),
+                new ListColumnSettingWithFilter("nodeDetails.raw.Type", "Node Type"),
+                new ListColumnSettingWithFilter("nodeDetails.raw.UpgradeDomain", "Upgrade Domain"),
+                new ListColumnSettingWithFilter("nodeDetails.raw.FaultDomain", "Fault Domain"),
+                new ListColumnSettingWithFilter("nodeDetails.raw.IsSeedNode", "Is Seed Node"),
+                new ListColumnSettingForBadge("nodeDetails.healthState", "Health State"),
+                new ListColumnSettingWithFilter("nodeDetails.nodeStatus", "Status"),
+            ]);
+            this.$scope.nodes = new NodeOnNetworkCollection(this.data, this.networkName);
+            this.$scope.containerListSettings = this.settings.getNewOrExistingListSettings("containers", ["raw.ServicePackageActivationId"], [
+                new ListColumnSetting("raw.ServicePackageActivationId", "Activation Id"),
+            ]);
+            this.$scope.containers = new DeployedContainerOnNetworkCollection(this.data, this.networkName);
             this.refresh();
         }
 
@@ -44,13 +66,16 @@ module Sfx {
                     this.$scope.network = network;
                 });
         }
-        /*private refreshEssentials(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
-            console.log("referesh essentials");
-            return this.$scope.network.deplyedAppsOnNetwork.refresh(messageHandler).then(deployedApps => {
-                this.$scope.deployedApps = deployedApps;
-            });
-        }
 
+        private refreshEssentials(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+
+            return this.$q.all([
+                this.$scope.apps.refresh(messageHandler),
+                this.$scope.nodes.refresh(messageHandler),
+                this.$scope.containers.refresh(messageHandler)
+            ]);
+        }
+/*
         private refreshDetails(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
             console.log("refresh details");
             return this.$scope.network.deplyedAppsOnNetwork.refresh(messageHandler).then(deployedApps => {

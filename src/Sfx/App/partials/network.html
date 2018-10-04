@@ -29,7 +29,15 @@
         </div>
         <div class="detail-pane">
             <h4>Deployed Applications</h4>
-            <sfx-detail-list list="deployedApps" list-settings="listSettings"></sfx-detail-list>
+            <sfx-detail-list list="apps" list-settings="appListSettings"></sfx-detail-list>
+        </div>
+        <div class="detail-pane">
+            <h4>Attached Nodes</h4>
+            <sfx-detail-list list="nodes" list-settings="nodeListSettings"></sfx-detail-list>
+        </div>
+        <div class="detail-pane">
+            <h4>Containers</h4>
+            <sfx-detail-list list="containers" list-settings="containerListSettings"></sfx-detail-list>
         </div>
     </script>
     <script type="text/ng-template" id="tab_details">

@@ -83,12 +83,11 @@ module Sfx {
 
         public createNetwork(networkName: string, networkAddressPrefix: string, messageHandler?: IResponseMessageHandler): angular.IHttpPromise<{}> {
             let url = "Resources/Networks/" + encodeURIComponent(networkName);
-
-            let body: any = { "name" : networkName, "properties" : { "kind": "Local", "networkAddressPrefix":networkAddressPrefix } };
+            let body: any = { "name": networkName, "properties" : { "kind": "Local", "networkAddressPrefix": networkAddressPrefix } };
             return this.put(this.getApiUrl(url, RestClient.apiVersion60), "Isolated Network creation", body, messageHandler);
         }
 
-        public getNetwork(networkName: string, messageHandler?: IResponseMessageHandler): angular.IHttpPromise<IRawNetwork>{
+        public getNetwork(networkName: string, messageHandler?: IResponseMessageHandler): angular.IHttpPromise<IRawNetwork> {
             let url = "Resources/Networks/" + encodeURIComponent(networkName) + "/";
             return this.get(this.getApiUrl(url), "Get network", messageHandler);
         }
@@ -103,8 +102,28 @@ module Sfx {
         }
 
         public getNetworksOnApp(appId: string, messageHandler?: IResponseMessageHandler): angular.IPromise<IRawNetworkOnApp[]> {
-            let url = "Applications/" + encodeURIComponent(appId) +"/$/GetNetworks";
-            return this.getFullCollection<IRawNetworkOnApp>(url, "Get networks on Application", RestClient.apiVersion60);
+            let url = "Applications/" + encodeURIComponent(appId) + "/$/GetNetworks";
+            return this.getFullCollection<IRawNetworkOnApp>(url, "Get networks attached to a application", RestClient.apiVersion60);
+        }
+
+        public getNetworksOnNode(nodeName: string, messageHandler?: IResponseMessageHandler): angular.IPromise<IRawNetworkOnNode[]> {
+            let url = "Nodes/" + encodeURIComponent(nodeName) + "/$/GetNetworks";
+            return this.getFullCollection<IRawNetworkOnNode>(url, "Get networks deployed on a node", RestClient.apiVersion60);
+        }
+
+        public getAppsOnNetwork(networkName: string, messageHandler?: IResponseMessageHandler): angular.IPromise<IRawAppOnNetwork[]> {
+            let url = "Resources/Networks/" + encodeURIComponent(networkName) + "/ApplicationRefs";
+            return this.getFullCollection<IRawAppOnNetwork>(url, "Get applications using current network", RestClient.apiVersion60);
+        }
+
+        public getNodesOnNetwork(networkName: string, messageHandler?: IResponseMessageHandler): angular.IPromise<IRawNodeOnNetwork[]> {
+            let url = "Resources/Networks/" + encodeURIComponent(networkName) + "/DeployedNodes";
+            return this.getFullCollection<IRawNodeOnNetwork>(url, "Get nodes, current network is deployed on", RestClient.apiVersion60);
+        }
+
+        public getDeployedContainersOnNetwork(networkName: string, nodeName: string, messageHandler?: IResponseMessageHandler): angular.IPromise<IRawDeployedContainerOnNetwork[]> {
+            let url = "Nodes/" + encodeURIComponent(nodeName) + "/$/GetNetworks/" + encodeURIComponent(networkName) + "/$/GetCodePackages";
+            return this.getFullCollection<IRawDeployedContainerOnNetwork>(url, "Get containers on network", RestClient.apiVersion60);
         }
 
         public getNodes(messageHandler?: IResponseMessageHandler): angular.IPromise<IRawNode[]> {

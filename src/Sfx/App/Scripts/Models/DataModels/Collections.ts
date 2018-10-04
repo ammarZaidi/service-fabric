@@ -309,7 +309,85 @@ module Sfx {
 
         protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
             return this.data.restClient.getNetworksOnApp(this.appId, messageHandler).then(items => {
-                return _.map(items, raw => new NetworkOnApp(this.data, raw));
+                return _.map(items, raw => {
+                    let network =  new NetworkOnApp(this.data, raw);
+                    network.refresh();
+                    return network;
+                });
+            });
+        }
+    }
+
+    export class NetworkOnNodeCollection extends DataModelCollectionBase<NetworkOnNode> {
+        nodeName: string;
+        public constructor(data: DataService, nodeName: string) {
+            super(data);
+            this.nodeName = nodeName;
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            return this.data.restClient.getNetworksOnNode(this.nodeName, messageHandler).then(items => {
+                let filtered = _.filter(items, item => { return item.NetworkName !== "servicefabric_network"; });
+                return _.map(filtered, raw => {
+                    let network = new NetworkOnNode(this.data, raw);
+                    network.refresh();
+                    return network;
+                });
+            });
+        }
+    }
+    export class AppOnNetworkCollection extends DataModelCollectionBase<AppOnNetwork> {
+        networkName: string;
+        public constructor(data: DataService, networkName: string) {
+            super(data);
+            this.networkName = networkName;
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            return this.data.restClient.getAppsOnNetwork(this.networkName, messageHandler).then(items => {
+                return _.map(items, raw => {
+                    let application = new AppOnNetwork(this.data, raw);
+                    application.refresh();
+                    return application;
+                });
+            });
+        }
+    }
+
+    export class NodeOnNetworkCollection extends DataModelCollectionBase<NodeOnNetwork> {
+        networkName: string;
+        public constructor(data: DataService, networkName: string) {
+            super(data);
+            this.networkName = networkName;
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            return this.data.restClient.getNodesOnNetwork(this.networkName, messageHandler).then(items => {
+                return _.map(items, raw => {
+                    let node = new NodeOnNetwork(this.data, raw);
+                    node.refresh();
+                    return node;
+                });
+            });
+        }
+    }
+
+    export class DeployedContainerOnNetworkCollection extends DataModelCollectionBase<DeployedContainerOnNetwork> {
+        networkName: string;
+        public constructor(data: DataService, networkName: string) {
+            super(data);
+            this.networkName = networkName;
+        }
+
+        protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
+            let result: IRawDeployedContainerOnNetwork[];
+            return this.data.restClient.getNodesOnNetwork(this.networkName, messageHandler).then(items => {
+                 _.map(items, raw => {
+                     this.data.restClient.getDeployedContainersOnNetwork(this.networkName, raw.nodeName, messageHandler).then(ites => {
+                        result = result.concat(ites);
+                    });
+                });
+                return result;
             });
         }
     }

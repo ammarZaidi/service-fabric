@@ -4,25 +4,24 @@
 
 module Sfx {
 
-    export class NetworkOnApp extends DataModelBase<IRawNetworkOnApp> {
+    export class NodeOnNetwork extends DataModelBase<IRawNodeOnNetwork> {
 
         //public deplyedAppsOnNetwork: DeployedApplicationOnNetworkCollection;
         //public networkProperties: NetworkProperties;
-        public networkDetail: Network;
+        nodeDetails: Node;
 
-        public constructor(data: DataService, raw?: IRawNetworkOnApp) {
+        public constructor(data: DataService, raw?: IRawNodeOnNetwork) {
             super(data, raw);
-            //this.retrieveNewData();
         }
 
         protected retrieveNewData(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
-            return this.data.restClient.getNetwork(this.raw.networkName, messageHandler).then(items => {
-                this.networkDetail = new Network(this.data, items.data);
+            return this.data.restClient.getNode(this.raw.nodeName, messageHandler).then(items => {
+                this.nodeDetails = new Node(this.data, items.data);
             });
         }
 
         public get viewPath(): string {
-            return this.data.routes.getNetworkViewPath(this.raw.networkName);
+            return this.data.routes.getNodeViewPath(this.raw.nodeName);
         }
     }
 

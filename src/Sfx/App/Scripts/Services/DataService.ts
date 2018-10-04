@@ -127,7 +127,7 @@ module Sfx {
                 return this.tryGetValidItem(collection, networkName, forceRefresh, messageHandler);
             });
         }
-        
+
         public getNetworks(forceRefresh?: boolean, messageHandler?: IResponseMessageHandler): angular.IPromise<NetworkCollection> {
             return this.networks.ensureInitialized(forceRefresh, messageHandler);
         }

@@ -208,19 +208,42 @@ module Sfx {
         Id: string;
     }
 
-    export interface IRawNetwork{
+    export interface IRawNetwork {
         name: string;
         properties: IRawNetworkProperties;
     }
 
-    export interface IRawNetworkProperties{
+    export interface IRawNetworkProperties {
         kind: string;
         networkAddressPrefix: string;
         networkStatus: string;
     }
 
-    export interface IRawNetworkOnApp{
+    export interface IRawNetworkOnApp {
         networkName: string;
+    }
+
+    export interface IRawNetworkOnNode {
+        NetworkName: string;
+    }
+
+    export interface IRawAppOnNetwork {
+        ApplicationName: string;
+    }
+
+    export interface IRawNodeOnNetwork {
+        nodeName: string;
+    }
+
+    export interface IRawDeployedContainerOnNetwork {
+        ApplicationName: string;
+        NetworkName: string;
+        CodePackageName: string;
+        CodePackageVersion: string;
+        ServiceManifestName: string;
+        ServicePackageActivationId: string;
+        ContainerAddress: string;
+        ContainerId: string;
     }
 
     export interface IRawNode {
