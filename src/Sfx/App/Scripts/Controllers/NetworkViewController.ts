@@ -52,15 +52,23 @@ module Sfx {
                 new ListColumnSettingWithFilter("nodeDetails.nodeStatus", "Status"),
             ]);
             this.$scope.nodes = new NodeOnNetworkCollection(this.data, this.networkName);
-            this.$scope.containerListSettings = this.settings.getNewOrExistingListSettings("containers", ["raw.ServicePackageActivationId"], [
+            this.$scope.containerListSettings = this.settings.getNewOrExistingListSettings("containers", ["nodeName, raw.CodePackageName"], [
+                new ListColumnSettingForLink("raw.CodePackageName", "Code Package Name", item => item.viewPath),
+                new ListColumnSetting("nodeName", "Node Name"),
+                new ListColumnSetting("raw.NetworkName", "Network"),
+                new ListColumnSetting("raw.ApplicationName", "Application"),
+                new ListColumnSetting("raw.CodePackageVersion", "Version"),
+                new ListColumnSetting("raw.ServiceManifestName", "Service"),
                 new ListColumnSetting("raw.ServicePackageActivationId", "Activation Id"),
+                new ListColumnSetting("raw.ContainerAddress", "Container addresses"),
+                new ListColumnSetting("raw.ContainerId", "Container Id")
+
             ]);
             this.$scope.containers = new DeployedContainerOnNetworkCollection(this.data, this.networkName);
             this.refresh();
         }
 
         protected refreshCommon(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
-            console.log("refresh common");
             return this.data.getNetwork(this.networkName, true, messageHandler)
                 .then(network => {
                     this.$scope.network = network;

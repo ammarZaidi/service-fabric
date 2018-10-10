@@ -26,8 +26,7 @@ module Sfx {
 
             ]);
             this.$scope.actions = new ActionCollection(this.data.telemetry, this.$q);
-            if (this.data.actionsEnabled)
-            {
+            if (this.data.actionsEnabled) {
                 this.addActions(this.$scope.actions);
             }
             //this.activeTabId;

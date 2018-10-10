@@ -10,8 +10,10 @@ module Sfx {
         //public networkProperties: NetworkProperties;
         //nodeDetails: Node;
 
-        public constructor(data: DataService, raw?: IRawDeployedContainerOnNetwork) {
+        public nodeName: string;
+        public constructor(data: DataService, nodeName: string, raw?: IRawDeployedContainerOnNetwork) {
             super(data, raw);
+            this.nodeName = nodeName;
         }
 
         /*protected retrieveNewData(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
@@ -20,9 +22,15 @@ module Sfx {
             });
         }
 */
-  /*      public get viewPath(): string {
-            return this.data.routes.getNodeViewPath(this.raw.nodeName);
-        }*/
+        public get viewPath(): string {
+            return this.data.routes.getCodePackageViewPath(
+                this.nodeName,
+                IdUtils.nameToId(this.raw.ApplicationName),
+                 this.raw.ServiceManifestName,
+                 this.raw.ServicePackageActivationId,
+                 this.raw.CodePackageName
+                 );
+        }
     }
 
 }

@@ -66,7 +66,7 @@ module Sfx {
     export class NetworkProperties extends DataModelBase<IRawNetworkProperties> {
         public constructor(data: DataService, raw: IRawNetworkProperties) {
             super(data, raw);
-            
+
         }
 
     }

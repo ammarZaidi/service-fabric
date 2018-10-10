@@ -60,7 +60,7 @@ module Sfx {
         public getNetworksViewPath(): string {
             return "#/networks";
         }
-        
+
         public getNetworkViewPath(networkName: string): string {
             return "#/network/" + this.doubleEncode(networkName);
         }

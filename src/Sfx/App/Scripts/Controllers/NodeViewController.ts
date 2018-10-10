@@ -56,7 +56,7 @@ module Sfx {
             this.$scope.unhealthyEvaluationsListSettings = this.settings.getNewOrExistingUnhealthyEvaluationsListSettings();
             this.$scope.nodeEvents = this.data.createNodeEventList(this.nodeName);
 
-            this.$scope.networkListSettings = this.settings.getNewOrExistingListSettings("networks", ["networkDetail.name"],[
+            this.$scope.networkListSettings = this.settings.getNewOrExistingListSettings("networks", ["networkDetail.name"], [
                 new ListColumnSettingForLink("networkDetail.name", "Network Name", item => item.viewPath),
                 new ListColumnSetting("networkDetail.type", "Network Type"),
                 new ListColumnSetting("networkDetail.addressPrefix", "Network Address Prefix"),

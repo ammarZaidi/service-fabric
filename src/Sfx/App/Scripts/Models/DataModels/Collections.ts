@@ -380,14 +380,20 @@ module Sfx {
         }
 
         protected retrieveNewCollection(messageHandler?: IResponseMessageHandler): angular.IPromise<any> {
-            let result: IRawDeployedContainerOnNetwork[];
             return this.data.restClient.getNodesOnNetwork(this.networkName, messageHandler).then(items => {
-                 _.map(items, raw => {
-                     this.data.restClient.getDeployedContainersOnNetwork(this.networkName, raw.nodeName, messageHandler).then(ites => {
-                        result = result.concat(ites);
-                    });
+                let result: DeployedContainerOnNetwork[] = new Array();
+                let promises = [];
+                _.each(items, raw => {
+                    promises.push(this.data.restClient.getDeployedContainersOnNetwork(this.networkName, raw.nodeName, messageHandler).then(values => {
+                        _.each(values, value => {
+                            result.push(new DeployedContainerOnNetwork(this.data, raw.nodeName, value));
+                        });
+                    }));
                 });
-                return result;
+                return this.data.$q.all(promises).then(values => {
+                    return result;
+                });
+
             });
         }
     }
